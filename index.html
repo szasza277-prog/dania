@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glassmorphism · Love Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f8d0d8 0%, #e8b4c0 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 24px;
+      margin: 0;
+    }
+
+    /* نافذة Glassmorphism - مستوحاة من الصورة */
+    .glass-window {
+      background: rgba(255, 240, 245, 0.35);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border-radius: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 
+        0 20px 50px rgba(120, 60, 80, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+      padding: 32px 28px 34px;
+      max-width: 820px;
+      width: 100%;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    /* شريط علوي Glass */
+    .title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 245, 248, 0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 60px;
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 12px rgba(160, 80, 110, 0.10);
+      margin-bottom: 28px;
+    }
+
+    .title-bar h2 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #3b1f2b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-bar .glass-tag {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(4px);
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4f2a3a;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* أزرار "Try It Now" و "View Examples" */
+    .action-glass {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+    }
+
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 10px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #2d1a22;
+      box-shadow: 0 4px 12px rgba(160, 80, 110, 0.08);
+      transition: 0.15s ease;
+      cursor: default;
+    }
+
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.55);
+      transform: scale(0.97);
+    }
+
+    /* حاوية السؤال (بطاقة Glass) */
+    .question-card {
+      background: rgba(255, 245, 248, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 40px;
+      padding: 28px 24px 24px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 24px rgba(120, 60, 80, 0.08), inset 0 0 0 1px rgba(255,255,255,0.4);
+      transition: 0.2s;
+    }
+
+    .question-text {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.6;
+      color: #2d1a22;
+      margin-bottom: 22px;
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+      justify-content: center;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 60px;
+      padding: 12px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #2d1a22;
+      box-shadow: 0 4px 12px rgba(160, 80, 110, 0.06);
+      transition: 0.12s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+      line-height: 1.4;
+      flex: 0 1 auto;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .option-btn.selected {
+      background: rgba(200, 130, 160, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(180, 90, 120, 0.6);
+      box-shadow: 0 0 0 2px rgba(180, 80, 120, 0.3), 0 4px 14px rgba(160, 80, 110, 0.15);
+      transform: scale(0.97);
+    }
+
+    .option-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* منطقة إعادة المحاولة للسؤال 7 */
+    .retry-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .retry-btn {
+      background: rgba(200, 130, 160, 0.3);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 60px;
+      color: #2d1a22;
+      padding: 8px 24px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(120, 60, 80, 0.08);
+      cursor: pointer;
+      transition: 0.1s ease;
+    }
+
+    .retry-btn:active {
+      transform: scale(0.95);
+    }
+
+    .retry-msg {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(4px);
+      padding: 6px 20px;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 200, 200, 0.5);
+      font-size: 13px;
+      font-weight: 500;
+      color: #a03a5a;
+    }
+
+    /* جملة البيتزا النهائية */
+    .pizza-message {
+      background: rgba(255, 240, 245, 0.5);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      padding: 18px 24px;
+      margin: 22px 0 12px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2d1a22;
+      box-shadow: 0 8px 24px rgba(120, 60, 80, 0.08);
+      letter-spacing: 0.5px;
+      display: none;
+    }
+
+    .pizza-message span {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 18px;
+      border-radius: 60px;
+    }
+
+    /* مؤشر التقدم Glass */
+    .progress {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 14px 0 20px;
+    }
+
+    .progress .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 2px 8px rgba(120, 60, 80, 0.05);
+      transition: 0.15s;
+    }
+
+    .progress .dot.done {
+      background: rgba(180, 100, 140, 0.5);
+      border-color: rgba(180, 100, 140, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .progress .dot.active {
+      background: rgba(200, 130, 170, 0.6);
+      border-color: rgba(200, 130, 170, 0.6);
+      box-shadow: 0 0 0 3px rgba(200, 130, 170, 0.2);
+    }
+
+    /* ستيكرز سفلى */
+    .pixel-stickers {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .pixel-stickers div {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      padding: 6px 18px;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(120, 60, 80, 0.04);
+    }
+
+    /* التسميات السفلية */
+    .glass-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #4f2a3a;
+      opacity: 0.7;
+      padding: 0 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 640px) {
+      .glass-window { padding: 20px 16px; }
+      .question-text { font-size: 17px; }
+      .option-btn { font-size: 13px; padding: 10px 18px; }
+      .title-bar h2 { font-size: 15px; }
+      .pizza-message { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="glass-window">
+  <!-- شريط علوي Glass -->
+  <div class="title-bar">
+    <h2>✨ Love is in the Air</h2>
+    <span class="glass-tag">💎 glass</span>
+  </div>
+
+  <!-- أزرار Glass -->
+  <div class="action-glass">
+    <span class="glass-btn">✨ Try It Now</span>
+    <span class="glass-btn">👁️ View Examples</span>
+  </div>
+
+  <!-- مؤشر التقدم -->
+  <div class="progress" id="progressDots"></div>
+
+  <!-- حاوية السؤال -->
+  <div id="questionContainer"></div>
+
+  <!-- جملة البيتزا -->
+  <div class="pizza-message" id="pizzaMessage">
+    <span>🍕 دانية مازالك تساليلي بيتزا كاري 🍕</span>
+  </div>
+
+  <!-- ستيكرز -->
+  <div class="pixel-stickers">
+    <div>💬</div>
+    <div>❤️</div>
+    <div>🔔</div>
+    <div>✉️</div>
+  </div>
+
+  <!-- تذييل -->
+  <div class="glass-footer">
+    <span>Blur · Transparency · Gradients</span>
+    <span>✨ vueschool</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- الأسئلة (كلها بالإنجليزية) ----------
+    const questions = [
+      {
+        id: 1,
+        text: "1. If you had a whole day with no studying or work, what would you choose?",
+        options: ["📚 Read a book or learn something new.", "🎮 Play games or watch movies.", "🌳 Go out for a walk and enjoy the day."]
+      },
+      {
+        id: 2,
+        text: "2. Which animal do you think resembles your personality?",
+        options: ["🐱 Quiet cat.", "🐼 Cute panda.", "🦊 Smart fox."]
+      },
+      {
+        id: 3,
+        text: "3. If you won a free trip, where would you like to go?",
+        options: ["🏔️ Mountains.", "🌊 Sea.", "🏙️ Big city."]
+      },
+      {
+        id: 4,
+        text: "4. Which superpower would you choose?",
+        options: ["⏳ Stop time.", "🪽 Flying.", "🫥 Invisibility."]
+      },
+      {
+        id: 5,
+        text: "5. How do you spend your best vacation?",
+        options: ["☕ At home with a movie and a drink.", "🌍 Travel and explore new places.", "👨‍👩‍👧 With family or friends."]
+      },
+      {
+        id: 6,
+        text: "6. If you had to choose one color that represents you, which would it be?",
+        options: ["💙 Blue (calm).", "💚 Green (balance).", "💜 Purple (creativity)."]
+      },
+      // 7 خاص: force yes
+      {
+        id: 7,
+        text: "7. Do you think you always deserve the best?",
+        options: ["✅ Yes", "❌ No"],
+        special: true,
+        specialType: 'forceYes'
+      },
+      // 8
+      {
+        id: 8,
+        text: "8. dania, are you willing to study seriously this year?",
+        options: ["✅ Yes", "📱 I just answered this question on Snapchat", "🌙 Of course nassim inshaa allah"],
+        special: true,
+        specialType: 'snapchat'
+      },
+      // 9
+      {
+        id: 9,
+        text: "9. dania, is your mother kind?",
+        options: ["✅ yes ofc", "🔥 better than ur mom", "🤦 nassim you're ideot"],
+        special: true,
+        specialType: 'motherKind'
+      },
+      // 10
+      {
+        id: 10,
+        text: "10. dania, thank you for the 18th birthday cake you and zaineb, I will never forget it 😄🎂🎈",
+        options: ["🙅 no thanks", "💰 Give me back her money", "🎉 thanks to zaineb also"],
+        special: true,
+        specialType: 'cakeThank'
+      }
+    ];
+
+    let currentIndex = 0;
+    const selectedAnswers = {};
+    const container = document.getElementById('questionContainer');
+    const progressDots = document.getElementById('progressDots');
+    const pizzaMsg = document.getElementById('pizzaMessage');
+
+    function renderCurrentQuestion() {
+      if (currentIndex >= questions.length) {
+        pizzaMsg.style.display = 'block';
+        container.innerHTML = `<div class="question-card" style="text-align:center; padding:30px;">
+          <div style="font-size:28px;">🎉</div>
+          <div style="font-size:18px; margin-top:12px; font-weight:500;">All done! 💖</div>
+        </div>`;
+        updateProgress();
+        return;
+      }
+
+      const q = questions[currentIndex];
+      const block = document.createElement('div');
+      block.className = 'question-card';
+
+      const qText = document.createElement('div');
+      qText.className = 'question-text';
+      qText.textContent = q.text;
+      block.appendChild(qText);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      q.options.forEach((optText, optIndex) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = optText;
+        btn.dataset.qId = q.id;
+        btn.dataset.optIndex = optIndex;
+
+        if (selectedAnswers[q.id] !== undefined && selectedAnswers[q.id] === optIndex) {
+          btn.classList.add('selected');
+        }
+
+        btn.addEventListener('click', function(e) {
+          handleOptionClick(q.id, optIndex, optText, this);
+        });
+
+        if (q.special && q.specialType === 'forceYes' && optText.includes('No')) {
+          btn.dataset.specialNo = 'true';
+        }
+
+        optionsDiv.appendChild(btn);
+      });
+
+      block.appendChild(optionsDiv);
+
+      // للسؤال 7
+      if (q.special && q.specialType === 'forceYes') {
+        const retryArea = document.createElement('div');
+        retryArea.className = 'retry-area';
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'retry-btn';
+        retryBtn.textContent = '🔄 Retry';
+        retryBtn.dataset.qId = q.id;
+        retryBtn.addEventListener('click', function() {
+          delete selectedAnswers[q.id];
+          renderCurrentQuestion();
+          pizzaMsg.style.display = 'none';
+          const msg = document.querySelector('.retry-msg');
+          if (msg) msg.remove();
+        });
+
+        const msgSpan = document.createElement('span');
+        msgSpan.className = 'retry-msg';
+        msgSpan.id = 'retryMsg7';
+        msgSpan.textContent = '⚠️ You must choose Yes only!';
+        msgSpan.style.display = 'none';
+
+        retryArea.appendChild(retryBtn);
+        retryArea.appendChild(msgSpan);
+        block.appendChild(retryArea);
+      }
+
+      container.innerHTML = '';
+      container.appendChild(block);
+      updateProgress();
+    }
+
+    function handleOptionClick(qId, optIndex, optText, btnElement) {
+      const question = questions.find(q => q.id === qId);
+      if (!question) return;
+
+      if (question.special && question.specialType === 'forceYes') {
+        if (optText.includes('No')) {
+          const msg = document.querySelector('#retryMsg7');
+          if (msg) {
+            msg.style.display = 'inline-block';
+            msg.textContent = '❌ You are wrong! Choose Yes only.';
+          }
+          delete selectedAnswers[qId];
+          const parentBlock = btnElement.closest('.question-card');
+          if (parentBlock) {
+            const btns = parentBlock.querySelectorAll('.option-btn');
+            btns.forEach(b => b.classList.remove('selected'));
+          }
+          renderCurrentQuestion();
+          pizzaMsg.style.display = 'none';
+          return;
+        } else {
+          const msg = document.querySelector('#retryMsg7');
+          if (msg) msg.style.display = 'none';
+          selectedAnswers[qId] = optIndex;
+          const parentBlock = btnElement.closest('.question-card');
+          if (parentBlock) {
+            const btns = parentBlock.querySelectorAll('.option-btn');
+            btns.forEach(b => b.classList.remove('selected'));
+            btnElement.classList.add('selected');
+          }
+          setTimeout(() => { moveToNext(); }, 180);
+          return;
+        }
+      }
+
+      // باقي الأسئلة
+      selectedAnswers[qId] = optIndex;
+      const parentBlock = btnElement.closest('.question-card');
+      if (parentBlock) {
+        const btns = parentBlock.querySelectorAll('.option-btn');
+        btns.forEach(b => b.classList.remove('selected'));
+        btnElement.classList.add('selected');
+      }
+      setTimeout(() => { moveToNext(); }, 180);
+    }
+
+    function moveToNext() {
+      const currentQ = questions[currentIndex];
+      if (!currentQ) return;
+
+      if (currentQ.special && currentQ.specialType === 'forceYes') {
+        if (selectedAnswers[currentQ.id] !== 0) {
+          const msg = document.querySelector('#retryMsg7');
+          if (msg) {
+            msg.style.display = 'inline-block';
+            msg.textContent = '⚠️ You must select Yes to continue.';
+          }
+          return;
+        }
+      } else {
+        if (selectedAnswers[currentQ.id] === undefined) return;
+      }
+
+      if (currentIndex === questions.length - 1) {
+        pizzaMsg.style.display = 'block';
+        currentIndex++;
+        renderCurrentQuestion();
+        return;
+      }
+
+      currentIndex++;
+      renderCurrentQuestion();
+    }
+
+    function updateProgress() {
+      progressDots.innerHTML = '';
+      for (let i = 0; i < questions.length; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        const q = questions[i];
+        if (selectedAnswers[q.id] !== undefined) dot.classList.add('done');
+        if (i === currentIndex && currentIndex < questions.length) dot.classList.add('active');
+        progressDots.appendChild(dot);
+      }
+    }
+
+    renderCurrentQuestion();
+  })();
+</script>
+</body>
+</html>
